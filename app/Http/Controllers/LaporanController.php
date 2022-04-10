@@ -24,8 +24,8 @@ class LaporanController extends Controller
 		if( $request->has('bulan') && $request->has('tahun') ){
 			$tahun = $request->tahun;
 		    $bulan = $request->bulan; 
-		    $where .= $bulan <> "" ? "AND gaji.bulan = $bulan" : "";
-		    $where .= $bulan <> "" ? "AND gaji.tahun = $bulan" : "";
+		    $where .= $bulan <> "" ? "AND gaji.bulan = $bulan " : "";
+		    $where .= $bulan <> "" ? "AND gaji.tahun = $tahun " : "";
 		}
 
 		$q = "
@@ -48,6 +48,7 @@ class LaporanController extends Controller
 		$data = DB::select($q);
 		return $data;
 	}
+
     public function gaji(Request $request){
     	$data = [];
     	$periode = [];
@@ -76,10 +77,9 @@ class LaporanController extends Controller
 
     public function printGaji(Request $request)
     {
-        $data = $this->getDataGaji($request);
-
+		$data = $this->getDataGaji($request);
         //return view('admin.laporan.print_gaji', compact('data'));
-        $pdf = PDF::loadview('admin.laporan.print_gaji', compact('data'))->stream('Laporan Gaji.pdf');
+        $pdf = PDF::loadview('admin.laporan.print_gaji', compact('data'))->setPaper('letter', 'landscape')->stream('Laporan Gaji.pdf');
         return $pdf;
     }
 

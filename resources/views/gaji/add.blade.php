@@ -27,10 +27,13 @@
 
             </select>
             <select class="form-control" name="tahun" >
-              <option value="2019" {{ ($dataRequest['tahun'] ?? 0 ) == "2019" ? "selected" : "" }}>2019</option>
+              @foreach( $yearMonth['year'] as $m => $v )
+                <option value="{{ $v }}" {{ ($dataRequest['tahun'] ?? 0 ) == $v ? "selected" : "" }}>{{ $v }}</option>
+              @endforeach
+              <!-- <option value="2019" {{ ($dataRequest['tahun'] ?? 0 ) == "2019" ? "selected" : "" }}>2019</option>
               <option value="2020" {{ ($dataRequest['tahun'] ?? 0 ) == "2020" ? "selected" : "" }}>2020</option>
               <option value="2021" {{ ($dataRequest['tahun'] ?? 0 ) == "2021" ? "selected" : "" }}>2021</option>
-              <option value="2022" {{ ($dataRequest['tahun'] ?? 0 ) == "2022" ? "selected" : "" }}>2022</option>
+              <option value="2022" {{ ($dataRequest['tahun'] ?? 0 ) == "2022" ? "selected" : "" }}>2022</option> -->
             </select>
             <button type="submit" class="btn btn-primary" style="margin-bottom: 0">Ambil Data</button>
           </div>
@@ -96,31 +99,31 @@
                         <input type="number" class="text-right" min="0" max="999999999" name="gaji_pokok[]"  id="gaji_pokok-{{$idx}}" readonly value="{{ $d->gaji_pokok }}" data-idx="{{$idx}}">
                       </td>
                       <td>
-                        <input type="number" min="0" max="31" class="text-center" name="hari_kerja[]"  id="hari_kerja-{{$idx}}" value="{{ $d->hari_kerja }}">
+                        <input type="number" min="0" max="31" class="text-center" name="hari_kerja[]"  id="hari_kerja-{{$idx}}" value="{{ $d->hari_kerja }}" readonly>
                       </td>
                       <td>
-                        <input type="number" min="0" max="31" class="text-center" name="hari_izin[]"  id="hari_izin-{{$idx}}" value="{{ $d->hari_izin }}">
+                        <input type="number" min="0" max="31" class="text-center" name="hari_izin[]"  id="hari_izin-{{$idx}}" value="{{ $d->hari_izin }}" readonly>
                       </td>
                       <td>
-                        <input type="number" min="0" max="31" class="text-center" name="hari_sakit[]"  id="hari_sakit-{{$idx}}" value="{{ $d->hari_sakit }}">
+                        <input type="number" min="0" max="31" class="text-center" name="hari_sakit[]"  id="hari_sakit-{{$idx}}" value="{{ $d->hari_sakit }}" readonly>
                       </td>
                       <td>
-                        <input type="number" min="0" max="31" class="text-center" name="hari_cuti[]" id="hari_cuti-{{$idx}}"  value="{{ $d->hari_cuti }}">
+                        <input type="number" min="0" max="31" class="text-center" name="hari_cuti[]" id="hari_cuti-{{$idx}}"  value="{{ $d->hari_cuti }}" readonly>
                       </td>
                       <td>
-                        <input type="number" min="0" max="9999999" class="text-right" name="bpjs_kesehatan[]"  id="bpjs_kesehatan-{{$idx}}" value="{{ $d->total_bpjs_kesehatan }}" data-idx="{{$idx}}" onkeyup="kalkulasi()" onchange="kalkulasi()">
+                        <input type="number" min="0" step="any" class="text-right" name="bpjs_kesehatan[]"  id="bpjs_kesehatan-{{$idx}}" value="{{ $d->total_bpjs_kesehatan }}" data-idx="{{$idx}}" onkeyup="kalkulasi()" onchange="kalkulasi()">
                       </td>
                       <td>
-                        <input type="number" min="0" max="9999999" class="text-right" name="bpjs_tk[]"  id="bpjs_tk-{{$idx}}" value="{{ $d->total_bpjs_tk }}" data-idx="{{$idx}}" onkeyup="kalkulasi()" onchange="kalkulasi()">
+                        <input type="number" min="0" step="any" class="text-right" name="bpjs_tk[]"  id="bpjs_tk-{{$idx}}" value="{{ $d->total_bpjs_tk }}" data-idx="{{$idx}}" onkeyup="kalkulasi()" onchange="kalkulasi()">
                       </td>
                       <td>
-                        <input type="number" min="0" max="9999999" class="text-right" name="bpjs_jht[]"  id="bpjs_jht-{{$idx}}" value="{{ $d->total_bpjs_jht }}" data-idx="{{$idx}}" onkeyup="kalkulasi()" onchange="kalkulasi()">
+                        <input type="number" min="0" step="any" class="text-right" name="bpjs_jht[]"  id="bpjs_jht-{{$idx}}" value="{{ $d->total_bpjs_jht }}" data-idx="{{$idx}}" onkeyup="kalkulasi()" onchange="kalkulasi()">
                       </td>
                       <td>
-                        <input type="number" min="0" max="9999999" class="text-right" name="potongan_lain[]"  id="potongan_lain-{{$idx}}" value="0" data-idx="{{$idx}}" onkeyup="kalkulasi()" onchange="kalkulasi()">
+                        <input type="number" min="0" step="any" class="text-right" name="potongan_lain[]"  id="potongan_lain-{{$idx}}" value="0" data-idx="{{$idx}}" onkeyup="kalkulasi()" onchange="kalkulasi()">
                       </td>
                       <td>
-                        <input type="number" min="0" max="9999999" class="text-right" name="bonus[]"  id="bonus-{{$idx}}" value="0" data-idx="" onkeyup="kalkulasi()" onchange="kalkulasi()">
+                        <input type="number" min="0" step="any" class="text-right" name="bonus[]"  id="bonus-{{$idx}}" value="0" data-idx="" onkeyup="kalkulasi()" onchange="kalkulasi()">
                       </td>
 
                       <td>

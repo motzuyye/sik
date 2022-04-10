@@ -1,6 +1,9 @@
 <?php
 namespace App\Traits;
 
+use App\Absensi;
+use Carbon\Carbon;
+use DB;
 
 trait DateTraits {
     protected $years = [
@@ -58,10 +61,20 @@ trait DateTraits {
         ],
     ];
 
+    public function absensiYears(){
+        if( $absensi = Absensi::select(DB::raw("DISTINCT YEAR(tanggal) as tahun"))->orderBy('tahun','desc')->get() ){
+            $years = $absensi->pluck('tahun');
+        }else{
+            $years = [ now()->format('Y')];
+        }
+        return $years ;
+    }
+
     public function getYearMonth()
     {
+        $years = $this->absensiYears();
         $data = [
-            'year' => $this->years,
+            'year' => $years,
             'month' => $this->months,
         ];
 

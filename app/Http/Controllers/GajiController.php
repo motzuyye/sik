@@ -34,7 +34,7 @@ class GajiController extends Controller
         ->groupBy('tahun')
         ->orderBy('tahun', 'desc')->get();
 
-        $bulans = Gaji::selectRaw("MONTHNAME(CONCAT('2022-',gaji.bulan,'-01')) as nama_bulan, gaji.bulan, DATE(CONCAT('2011-',gaji.bulan,'-01')) as tgl_baru")
+        $bulans = Gaji::selectRaw("MONTHNAME(CONCAT( '2022','-',gaji.bulan,'-01')) as nama_bulan, gaji.bulan, DATE(CONCAT('2011-',gaji.bulan,'-01')) as tgl_baru")
         ->groupBy('gaji.bulan')
         ->orderBy('gaji.bulan', 'asc')->get();
         

@@ -37,12 +37,38 @@
 			</div>
 
 			<div class="x_content">
-				<table id="datatable" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+				<div class="container-fluid">
+					
+					<div class="form-group row">
+						<label class="control-label col-md-1 col-sm-1 col-xs-6">Tahun</label>
+						<div class="col-md-2 col-sm-2 col-xs-6 ">
+							<select id="filter-tahun" class="form-control">
+								<option value="">Pilih Tahun</option>
+								@foreach( $yearMonth['year'] as $m => $v )
+									<option value="{{ $v }}">{{ $v }}</option>
+								@endforeach
+							</select>
+						</div>
+						<label class="control-label col-md-1 col-sm-1 col-xs-6">Bulan</label>
+						<div class="col-md-2 col-sm-2 col-xs-6 ">
+							<select id="filter-bulan" class="form-control">
+								<option value="">Pilih Bulan</option>
+								@foreach( $yearMonth['month'] as $m => $v )
+									<option value="{{ $v['value'] }}" >{{ $v['name'] }}</option>
+								@endforeach
+							</select>
+						</div>
+					</div>
+					
+				</div>
+				<table id="datatable-absensi" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
 					<thead>
 						<tr>
 							<th>No.</th>
 							<th>Nik</th>
 							<th>Nama</th>
+							<th>Tahun</th>
+							<th>Bulan</th>
 							<th>Tanggal</th>
 							<th>Status</th>
 							<th>Jam Masuk</th>
@@ -63,6 +89,8 @@
 							<td>{{ $no++ }}</td>
 							<td>{{ str_pad( $d->pegawai['nik'] , 4, '0', STR_PAD_LEFT) }}</td>
 							<td>{{ $d->pegawai['nama'] }}</td>
+							<td>{{ $d->tahun }}</td>
+							<td>{{ $d->bulan }}</td>
 							<td>{{ $d->tanggal }}</td>
 							<td>{{ $d->status }}</td>
 							<td>{{ $d->jam_masuk }}</td>
@@ -75,8 +103,8 @@
 							@if( auth()->user()->level == 'hrd' || auth()->user()->level == 'developer' )
 							<td>
 
-								<a href="/absensi/edit/{{ $d->id }}" class="btn btn-xs btn-warning"><i class="fa fa-pencil-square-o"></i> Edit</a>
-								<a href="/absensi/delete/{{ $d->id }}" class="btn btn-xs btn-danger" onclick="return confirm('Apakah anda ingin menghapus data ini?');" data-popup="tooltip" data-original-title="Hapus Data"><i class="fa fa-trash"></i> Hapus</a>
+								<a href="/absensi/edit/{{ $d->id }}" class="btn btn-xs btn-warning {{ $d->has_gaji == '' || $d->has_gaji == null ? '' : 'disabled'  }} ><i class="fa fa-pencil-square-o"></i> Edit</a>
+								<a href="/absensi/delete/{{ $d->id }}" class="btn btn-xs btn-danger {{ $d->has_gaji == '' || $d->has_gaji == null ? '' : 'disabled'  }} " onclick="return confirm('Apakah anda ingin menghapus data ini?');" data-popup="tooltip" data-original-title="Hapus Data"><i class="fa fa-trash"></i> Hapus</a>
 
 							</td>
 							@endif
@@ -91,3 +119,49 @@
 </div>
 
 @endsection
+
+@push('script')
+
+<script type="text/javascript">
+	$.fn.dataTable.ext.search.push(
+		function( settings, data, dataIndex ) {
+			var filterTahun = parseInt( $('#filter-tahun').val(), 10 );
+			var filterBulan = parseInt( $('#filter-bulan').val(), 10 );
+			var tahun = parseFloat( data[3] ) || 0; // use data for the age column
+			var bulan = parseFloat( data[4] ) || 0; // use data for the age column
+			
+			if ( 
+				(
+					isNaN( filterTahun ) ||
+					( !isNaN( filterTahun ) && tahun == filterTahun )
+					
+				) && 
+				(
+					isNaN( filterBulan ) ||
+					( !isNaN( filterBulan ) && bulan == filterBulan )
+				)
+			){
+				return true;
+			}
+			return false;
+		}
+	);
+
+	$(document).ready(function() {
+		var table = $('#datatable-absensi').DataTable({
+			"columnDefs": [
+				{
+					"targets": [ 3,4 ],
+					"visible": false
+				}
+			]
+		});
+		
+		// Event listener to the two range filtering inputs to redraw on input
+		$('#filter-tahun, #filter-bulan').change( function() {
+			table.draw();
+		} );
+	} );
+	
+</script>
+@endpush

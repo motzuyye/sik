@@ -16,7 +16,15 @@
         <h2>{{ $title }}</h2>
         <div class="clearfix"></div>
       </div>
-
+      @if ($errors->any())
+          <div class="alert alert-danger">
+              <ul>
+                  @foreach ($errors->all() as $error)
+                      <li>{{ $error }}</li>
+                  @endforeach
+              </ul>
+          </div>
+      @endif
       <div class="x_content">
         @foreach($pegawai as $c)
         <form action="/pegawai/update/{{ $c->id }}" method="post" enctype="multipart/form-data" class="form-horizontal" autocomplete="off">
@@ -46,6 +54,7 @@
             <div class="col-md-4 col-sm-4 col-xs-6  {{ $errors->has('nik') ? 'bad' : '' }}">
               
               <input type="text" name="nik" value="{{ str_pad( old('nik', $c->nik), 4, '0', STR_PAD_LEFT) }}" class="form-control" placeholder="{{ $c->nik }}">
+                <span class="text-danger">{{ $errors->first('nik') }}</span>
             </div>
 
             <label class="control-label col-md-2 col-sm-2 col-xs-6">Username</label>
@@ -133,6 +142,7 @@
             <label class="control-label col-md-2 col-sm-2 col-xs-6">Email</label>
             <div class="col-md-4 col-sm-4 col-xs-6">
               <input type="email" name="email" value="{{ $c->email }}" class="form-control" required="" placeholder="Masukkan Email">
+                <span class="text-danger">{{ $errors->first('email') }}</span>
             </div>
 
           </div>

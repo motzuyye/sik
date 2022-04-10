@@ -136,6 +136,7 @@
             <label class="control-label col-md-2 col-sm-2 col-xs-6">Email</label>
             <div class="col-md-4 col-sm-4 col-xs-6">
               <input name="email" class="form-control" required="" placeholder="Masukkan Email" value="{{ old('email') }}">
+              <span class="text-danger">{{ $errors->first('email') }}</span>
             </div>
 
           </div>

@@ -9,24 +9,47 @@ use Carbon\Carbon;
 use App\Absensi;
 use App\Tower;
 use App\Kantor;
+use DB;
+use App\Traits\DateTraits;
 
 class AbsensiController extends Controller
 {
-    
+    use DateTraits;
+
     public function index()
     {
         $dt = Carbon::now();
         $date = $dt->format('Y-m-d H:i:s');
         $tgl = $dt->format('Y-m-d');
         $jam = $dt->format('H-m-d');
+
+        
         if ( Auth::user()->level == 'pegawai' ) {
-            $data   =   Absensi::with(['pegawai','kantor'])->where('id_pegawai', auth()->id() )->orderBy('tanggal', 'desc')->get();
+            $data   =   Absensi::with(['pegawai','kantor'])
+                ->select( DB::raw("absensi.*, YEAR(absensi.tanggal) as tahun, MONTH(absensi.tanggal) as bulan, gaji.id as has_gaji"))
+                ->leftJoin('gaji', function($join) {
+                    $join->on(  "gaji.tahun", '=', DB::raw('YEAR(absensi.tanggal)'));
+                    $join->on(  "gaji.bulan", '=', DB::raw('MONTH(absensi.tanggal)'));
+                    $join->on(  "gaji.id_pegawai", '=', 'absensi.id_pegawai');
+                })
+                ->where('absensi.id_pegawai', auth()->id() )
+                ->orderBy('absensi.tanggal', 'desc')->get();
         }else{
-            $data   =   Absensi::with(['pegawai','kantor'])->orderBy('tanggal', 'desc')->get();
+            $data   =   Absensi::with(['pegawai','kantor'])
+                            ->select( DB::raw("absensi.*, YEAR(absensi.tanggal) as tahun, MONTH(absensi.tanggal) as bulan, gaji.id as has_gaji"))
+                            ->leftJoin('gaji', function($join) {
+                                $join->on(  "gaji.tahun", '=', DB::raw('YEAR(absensi.tanggal)'));
+                                $join->on(  "gaji.bulan", '=', DB::raw('MONTH(absensi.tanggal)'));
+                                $join->on(  "gaji.id_pegawai", '=', 'absensi.id_pegawai');
+                            })
+                            ->orderBy('absensi.tanggal', 'desc')->get();
 
         }
+
+        $yearMonth = $this->getYearMonth();
+
         //$data = Absensi::with('pegawai')->orderBy('tanggal', 'desc')->get();
-        return view('absensi.index', compact('data', 'date', 'tgl','jam'));
+        return view('absensi.index', compact('data', 'date', 'tgl','jam', 'yearMonth'));
     }
 
     /**

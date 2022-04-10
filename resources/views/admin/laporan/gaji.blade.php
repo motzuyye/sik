@@ -22,21 +22,22 @@
 		        		<button class="btn btn-success pull-left" onclick="print()"><i class="fa fa-print"></i></button>
 		        	</div>
 			        <div class="col-md-6 col-lg-6 pull-right">
-	        	        <form action="/gaji/create" method="get" enctype="multipart/form-data" class="form-inline" autocomplete="off">
+	        	        <form action="/laporan/gaji/print" method="get" enctype="multipart/form-data" class="form-inline" autocomplete="off">
 	        		        {{ csrf_field() }}
-				            <select class="form-control" name="bulan" >
+							<select id="filter-tahun"  class="form-control" name="tahun" >
+				            	<option value="">-- pilih tahun --</option>
+				            	@foreach( $yearMonth['year'] as $m => $v )
+				              		<option value="{{ $v }}" @if( $v == Date('Y') )  @endif >{{ $v }}</option>
+				            	@endforeach
+				            </select>
+				            <select id="filter-bulan" class="form-control" name="bulan" >
 				            	<option value="">-- pilih bulan --</option>
 				              	@foreach( $yearMonth['month'] as $m => $v )
 				                	<option value="{{ $v['value'] }}" @if( $v['value'] == Date('m') )  @endif >{{ $v['name'] }}</option>
 				              	@endforeach
 				            </select>
-				            <select class="form-control" name="tahun" >
-				            	<option value="">-- pilih bulan --</option>
-				            	@foreach( $yearMonth['year'] as $m => $v )
-				              		<option value="{{ $v }}" @if( $v == Date('Y') )  @endif >{{ $v }}</option>
-				            	@endforeach
-				            </select>
-			            	<button type="submit" class="btn btn-primary" style="margin-bottom: 0">Cari Data</button>
+				            
+			            	<button type="button" class="btn btn-primary" style="margin-bottom: 0" onclick="print()">Cetak Laporan</button>
 			            </form>
 			        </div>
 		        </div>
@@ -48,11 +49,12 @@
 		    <div class="x_content col-md-12"  >
 		        <div style="">
 		            <div style="overflow-x: scroll; overflow-y: hidden;">
-			            <table class="table table-striped table-bordered nowrap " cellspacing="0" >
+			            <table id="datatable-gaji" class="table table-striped table-bordered nowrap " cellspacing="0" >
 			                <thead>
 				                <tr>
 				                    <th rowspan="2" class="text-center">No.</th>
 				                    <th rowspan="2" class="text-center">Tahun</th>
+				                    <th rowspan="2" class="text-center">Bulan No</th>
 				                    <th rowspan="2" class="text-center">Bulan</th>
 				                    <th rowspan="2" class="text-center">Gaji Pokok</th>
 				                    <th colspan="4" class="text-center">Ringkasan Kehadiran</th>
@@ -79,6 +81,7 @@
 					                    <tr  >
 						                    <td align="center">{{ $no++ }}</td>
 						                    <td align="center">{{$d->tahun}}</td>
+						                    <td align="center">{{$d->bulan}}</td>
 						                    <td align="center">{{$d->nama_bulan}}</td>
 						                    <td align="right">{{$d->gaji_pokok}}</td>
 						                    <td align="center">{{$d->hari_kerja}}</td>
@@ -128,9 +131,45 @@
 
 @push('script')
 <script type="text/javascript">
-	function print(){
+	$.fn.dataTable.ext.search.push(
+		function( settings, data, dataIndex ) {
+			var filterTahun = parseInt( $('#filter-tahun').val(), 10 );
+			var filterBulan = parseInt( $('#filter-bulan').val(), 10 );
+			var tahun = parseFloat( data[1] ) || 0; // use data for the age column
+			var bulan = parseFloat( data[2] ) || 0; // use data for the age column
+			
+			if ( 
+				(
+					isNaN( filterTahun ) ||
+					( !isNaN( filterTahun ) && tahun == filterTahun )
+					
+				) && 
+				(
+					isNaN( filterBulan ) ||
+					( !isNaN( filterBulan ) && bulan == filterBulan )
+				)
+			){
+				return true;
+			}
+			return false;
+		}
+	);
+
+	$(document).ready(function() {
+		var table = $('#datatable-gaji').DataTable({
+
+		});
 		
-		$('#frame-slip').attr('src', '/laporan/gaji/print');
+		// Event listener to the two range filtering inputs to redraw on input
+		$('#filter-tahun, #filter-bulan').change( function() {
+			table.draw();
+		} );
+	} );
+
+	function print(){
+		tahun = $('#filter-tahun').val();
+		bulan = $('#filter-bulan').val();
+		$('#frame-slip').attr('src', '/laporan/gaji/print?tahun='+tahun+'&bulan='+bulan);
 		$('.bs-modal-lg').modal('show');
 	}
 
