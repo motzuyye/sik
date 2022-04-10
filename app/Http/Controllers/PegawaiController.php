@@ -54,6 +54,16 @@ class PegawaiController extends Controller
      */
     public function store(Request $request)
     {
+        $validatedData = $request->validate(
+            [
+                'nik' => 'required|numeric|unique:pegawai|max:20',
+                'email' => 'email',
+            ],
+            [
+                'nik.numeric' => 'NIK Hanya boleh angka',
+                'nik.unique' => 'NIK Sudah terpakai'
+            ]
+        );
         $data = (array) $request->except(['password','foto']);
         $password = bcrypt($request->username);
         $data['password'] = $password;
@@ -120,6 +130,17 @@ class PegawaiController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validatedData = $request->validate(
+            [
+                'nik' => 'required|numeric|unique:pegawai|max:20',
+                'email' => 'email',
+            ],
+            [
+                'nik.numeric' => 'NIK Hanya boleh angka',
+                'nik.unique' => 'NIK Sudah terpakai'
+            ]
+        );
+
         $data = (array) $request->except(['id', 'foto']);
 
         if($request->has('foto')){

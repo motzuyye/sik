@@ -22,7 +22,7 @@
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<a class="btn btn-xs btn-success" href="/absensi/create" ><i class="fa fa-fax"></i> Absen</a>
+						<a class="btn btn-xs btn-success" href="/absensi/create" ><i class="fa fa-fax"></i> Hadir</a>
 						
 						<div class="clearfix"></div>
 						@if ($message = Session::get('full_absen'))

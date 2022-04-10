@@ -9,7 +9,7 @@
 			<li><a href="/biodata"><i class="fa fa-user"></i> Biodata </a></li>
 			@endif
 			<li><a href="/permohonan"><i class="fa fa-newspaper-o"></i> Data Permohonan</a></li>
-			<li><a href="/absensi"><i class="fa fa-clock-o"></i> Absensi</a></li>
+			<li><a href="/absensi"><i class="fa fa-clock-o"></i> Kehadiran</a></li>
 			<li><a href="/report"><i class="fa fa-clock-o"></i> Daily Report</a></li>
 			<li><a href="/gaji"><i class="fa fa-dollar"></i> Data Gaji</a></li>
 			

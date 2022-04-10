@@ -62,7 +62,7 @@
             <label class="control-label col-md-2 col-sm-2 col-xs-6">Kantor</label>
             <div class="col-md-4 col-sm-4 col-xs-6">
               <input type="hidden" name="id_kantor" class="form-control" value="{{ $d->id_kantor }}" required>
-              <input type="text" name="nama_kantor" class="form-control" value="{{ $d->kantor->nama }}" disabled>
+              <input type="text" name="nama_kantor" class="form-control" value="{{ $d->kantor->nama ?? $d->kantor['nama'] }}" disabled>
             </div>
 
             {{-- <label class="control-label col-md-2 col-sm-2 col-xs-6">Kantor</label>

@@ -32,7 +32,32 @@
 			</div>
 
 			<div class="x_content">
-				<table id="datatable" class="table table-striped table-bordered nowrap" cellspacing="0" width="100%">
+				<div class="container-fluid">
+					
+					<div class="form-group row">
+						<label class="control-label col-md-1 col-sm-1 col-xs-6">Tahun</label>
+						<div class="col-md-2 col-sm-2 col-xs-6 ">
+							<select id="filter-tahun" class="form-control">
+								<option value="">Pilih Tahun</option>
+								@foreach($tahuns as $tahun)
+									<option value="{{ $tahun->tahun }}">{{ $tahun->tahun }}</option>
+								@endforeach
+							</select>
+						</div>
+						<label class="control-label col-md-1 col-sm-1 col-xs-6">Bulan</label>
+						<div class="col-md-2 col-sm-2 col-xs-6 ">
+							<select id="filter-bulan" class="form-control">
+								<option value="">Pilih Bulan</option>
+								@foreach($bulans as $i => $bulan)
+									<option value="{{ $bulan->bulan }}">{{ $bulan->nama_bulan }}</option>
+								@endforeach
+							</select>
+						</div>
+					</div>
+					
+				</div>
+				
+				<table id="datatable-gaji" class="table table-striped table-bordered nowrap" cellspacing="0" width="100%">
 					<thead>
 						<tr>
 							<th rowspan="2">No.</th>
@@ -129,6 +154,38 @@
 @push('script')
 
 <script type="text/javascript">
+	$.fn.dataTable.ext.search.push(
+		function( settings, data, dataIndex ) {
+			var filterTahun = parseInt( $('#filter-tahun').val(), 10 );
+			var filterBulan = parseInt( $('#filter-bulan').val(), 10 );
+			var tahun = parseFloat( data[3] ) || 0; // use data for the age column
+			var bulan = parseFloat( data[4] ) || 0; // use data for the age column
+			
+			if ( 
+				(
+					isNaN( filterTahun ) ||
+					( !isNaN( filterTahun ) && tahun == filterTahun )
+					
+				) && 
+				(
+					isNaN( filterBulan ) ||
+					( !isNaN( filterBulan ) && bulan == filterBulan )
+				)
+			){
+				return true;
+			}
+			return false;
+		}
+	);
+
+	$(document).ready(function() {
+		var table = $('#datatable-gaji').DataTable();
+		
+		// Event listener to the two range filtering inputs to redraw on input
+		$('#filter-tahun, #filter-bulan').change( function() {
+			table.draw();
+		} );
+	} );
 	function openSlip(id){
 		
 		$('#frame-slip').attr('src', '/gaji/slip/'+id);
@@ -139,5 +196,7 @@
 	    $('#frame-slip').html('');
 	    $('#frame-slip').attr('src', 'about:blank');
 	});
+	
+
 </script>
 @endpush

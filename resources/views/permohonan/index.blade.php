@@ -63,7 +63,7 @@
 							<td>{{ $d->mulai_tgl }}</td>
 							<td>{{ $d->sampai_tgl }}</td>
 							<td>
-								<a href="javascript:void(0)" onclick="">
+								<a href="javascript:void(0)" onclick="openImage('{{ asset( is_null($d->foto) ? 'img/noimage.png': 'img/permohonan/'.$d->foto) }}')">
 									<img src="{{ asset( is_null($d->foto) ? 'img/noimage.png': 'img/permohonan/'.$d->foto) }}" style="width: auto; height: 20vh">
 								</a>
 							</td>
@@ -91,8 +91,44 @@
 	</div>
 </div>
 
+<!-- Modal -->
+<div id="modal-image" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+
+	<!-- Modal content-->
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<h4 class="modal-title">Foto</h4>
+		</div>
+		<div class="modal-body text-center">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-12">
+						<img id="img-preview" src="cinqueterre.jpg" class="img-rounded" alt="Cinque Terre" style="height: auto;width: 100%;"> 
+					</div>
+					
+				</div>
+			</div>
+			
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		</div>
+	</div>
+
+	</div>
+</div>
 @include('permohonan.add')
 
 @include('permohonan.update')
 
 @endsection
+@push('script')
+    <script>
+		function openImage(url){
+			$('#img-preview').attr('src', url);
+			$('#modal-image').modal('show')
+		}
+	</script>
+@endpush
