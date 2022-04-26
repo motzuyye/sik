@@ -56,7 +56,7 @@ class PegawaiController extends Controller
     {
         $validatedData = $request->validate(
             [
-                'nik' => 'required|numeric|unique:pegawai|max:11',
+                'nik' => 'required|numeric|unique:pegawai|digits_between:4,11',
                 'email' => 'email',
             ],
             [
@@ -132,7 +132,7 @@ class PegawaiController extends Controller
     {
         $validatedData = $request->validate(
             [
-                'nik' => 'required|numeric|unique:pegawai|max:11',
+                'nik' => 'required|numeric|unique:pegawai|digits_between:4,11',
                 'email' => 'email',
             ],
             [
