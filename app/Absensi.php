@@ -18,6 +18,11 @@ class Absensi extends Model
     {
         return $this->belongsTo('App\Kantor', 'id_kantor');
     }
+
+    public function reports()
+    {
+        return $this->hasMany('App\Report', 'id_absensi');
+    }
     
 
 }

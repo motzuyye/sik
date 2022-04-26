@@ -15,7 +15,12 @@ Route::get('/generate/{password}', function ($password) {
 
 // Route::post('/goRegister', 'Controller@goRegister'); //masuk halaman register
 
-Auth::routes();
+//Auth::routes();
+Auth::routes([
+  'register' => true, // Registration Routes...
+  'reset' => false, // Password Reset Routes...
+  'verify' => false, // Email Verification Routes...
+]);
 
 Route::get('/home', 'HomeController@index')->name('home'); 
 

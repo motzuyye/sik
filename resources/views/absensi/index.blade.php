@@ -98,7 +98,7 @@
 							<td>{{ ( $d->jarak ) }} Meter</td>
 							<td>{{ $d->latitude }}</td>
 							<td>{{ $d->longitude }}</td>
-							<td>{{ $d->kantor['nama'] }}</td>
+							<td>{{ $d->kantor['nama']  ?? '' }}</td>
 							
 							@if( auth()->user()->level == 'hrd' || auth()->user()->level == 'developer' )
 							<td>

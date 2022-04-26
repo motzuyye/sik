@@ -6,3 +6,14 @@ password : stikombali
 1. go to about:config, 
 2. set security.enterprise_roots.enabled to true.
 
+
+dakbar
+Pass-akbar
+Admin
+User
+
+Username-dani
+Pass-dani
+
+Username-juni
+Pass-juni

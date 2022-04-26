@@ -24,6 +24,7 @@ class ReportController extends Controller
         $tgl = Date('Y-m-d');
         $absensi = Absensi::whereDate('tanggal', $tgl)->where( 'id_pegawai', auth()->id())->first();
         $exist = is_null($absensi) ? false :true;
+        //return dd();
         if ( Auth::user()->level == 'pegawai' ) {
 
             $data   =   Report::with(['absensi'])

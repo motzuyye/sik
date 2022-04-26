@@ -269,12 +269,15 @@
 
         var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
         map.fitBounds(polyline.getBounds());
-
-        //console.log(distance);
         
     });
-    setInterval(locateMap, 2000);
 
+    var getLocation  = setInterval(locateMap, 2000);
+
+    setTimeout(function(){
+      clearInterval(getLocation);
+    }, 5000);
+    
   });
 
 </script>

@@ -23,17 +23,22 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
-    <style type="text/css">
+    {{-- <style type="text/css">
         body{
             background: rgb(0,212,255);
 background: radial-gradient(circle, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 87%, rgba(2,0,36,1) 100%);
         }
-    </style>
+    </style> --}}
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-  <link href="{{ asset('css/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
-  <link href="{{ asset('css/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+    {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
+    
+    @stack('styles')
+    <link href="{{ asset('css/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+
+    <script src="{{ asset('css/bootstrap/dist/js/bootstrap.min.js') }}bootstrap.min.js"></script>
+    <script src="{{ asset('js/jquery/dist/jquery-1.11.3.min.js') }}"></script>
 </head>
 <body>
     <div id="app">
@@ -91,6 +96,7 @@ background: radial-gradient(circle, rgba(0,212,255,1) 0%, rgba(9,9,121,1) 87%, r
         <main class="py-4">
             @yield('content')
         </main>
+        @stack('scripts')
     </div>
 </body>
 </html>

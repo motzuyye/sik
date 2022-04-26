@@ -29,7 +29,7 @@
 				@if( auth()->user()->level == 'pegawai' )
 				<div class="row">
 					<div class="col-md-12">
-						<button class="btn btn-xs btn-primary " data-toggle="modal" data-target="#tambah" @if( count($data) > 0 || !$exist ) disabled @endif ><i class="fa fa-plus"></i> Buat Laporan</button>
+						<button class="btn btn-xs btn-primary " data-toggle="modal" data-target="#tambah" @if(!$exist || $absensi->reports()->exists() ) disabled @endif ><i class="fa fa-plus"></i> Buat Laporan</button>
 						<div class="clearfix"></div>
 					</div>
 				</div>
@@ -76,9 +76,9 @@
 							<th>Month</th>
 							<th>Year</th>
 							<th>Keterangan</th>
+							<th width="20%">Aksi</th>
 
 							@if( auth()->user()->level == 'hrd' || auth()->user()->level == 'developer' )
-							<th width="20%">Aksi</th>
 							@endif
 						</tr>
 					</thead>
@@ -93,13 +93,17 @@
 							<td>{{ $d->bulan }}</td>
 							<td>{{ $d->tahun }}</td>
 							<td style="font-size: .9rem">{!! $d->keterangan !!}</td>
-							@if( auth()->user()->level == 'hrd' || auth()->user()->level == 'developer' )
 							<td>
-								<a class="btn btn-xs btn-warning" data-toggle="modal" data-target="#update{{ $d->id }}"><i class="fa fa-pencil-square-o"></i> Edit</a>
-								<a href="/report/delete/{{ $d->id }}" class="btn btn-xs btn-danger" onclick="return confirm('Apakah anda ingin menghapus data ini?');" data-popup="tooltip" data-original-title="Hapus Data"><i class="fa fa-trash"></i> Hapus</a>
+								@if( $d->tanggal == Date('Y-m-d') )
+									<a class="btn btn-xs btn-warning" data-toggle="modal" data-target="#update{{ $d->id }}"><i class="fa fa-pencil-square-o"></i> Edit</a> 
+								@endif
+								@if( auth()->user()->level == 'hrd' || auth()->user()->level == 'developer' )
+
+									<a href="/report/delete/{{ $d->id }}" class="btn btn-xs btn-danger" onclick="return confirm('Apakah anda ingin menghapus data ini?');" data-popup="tooltip" data-original-title="Hapus Data"><i class="fa fa-trash"></i> Hapus</a>
 								
+								@endif
 							</td>
-							@endif
+							
 						</tr>
 						@endforeach
 					</tbody>
