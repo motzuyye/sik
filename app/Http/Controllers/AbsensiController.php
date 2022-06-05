@@ -26,7 +26,7 @@ class AbsensiController extends Controller
         
         if ( Auth::user()->level == 'pegawai' ) {
             $data   =   Absensi::with(['pegawai','kantor'])
-                ->select( DB::raw("absensi.*, YEAR(absensi.tanggal) as tahun, MONTH(absensi.tanggal) as bulan, gaji.id as has_gaji"))
+                ->select( DB::raw("absensi.*, YEAR(absensi.tanggal) as tahun, MONTH(absensi.tanggal) as bulan, MONTHNAME(absensi.tanggal) as nama_bulan, gaji.id as has_gaji"))
                 ->leftJoin('gaji', function($join) {
                     $join->on(  "gaji.tahun", '=', DB::raw('YEAR(absensi.tanggal)'));
                     $join->on(  "gaji.bulan", '=', DB::raw('MONTH(absensi.tanggal)'));
@@ -36,7 +36,7 @@ class AbsensiController extends Controller
                 ->orderBy('absensi.tanggal', 'desc')->get();
         }else{
             $data   =   Absensi::with(['pegawai','kantor'])
-                            ->select( DB::raw("absensi.*, YEAR(absensi.tanggal) as tahun, MONTH(absensi.tanggal) as bulan, gaji.id as has_gaji"))
+                            ->select( DB::raw("absensi.*, YEAR(absensi.tanggal) as tahun, MONTH(absensi.tanggal) as bulan, MONTHNAME(absensi.tanggal) as nama_bulan, gaji.id as has_gaji"))
                             ->leftJoin('gaji', function($join) {
                                 $join->on(  "gaji.tahun", '=', DB::raw('YEAR(absensi.tanggal)'));
                                 $join->on(  "gaji.bulan", '=', DB::raw('MONTH(absensi.tanggal)'));

@@ -39,7 +39,7 @@
 			<div class="x_content">
 				<div class="container-fluid">
 					
-					<div class="form-group row">
+					{{-- <div class="form-group row">
 						<label class="control-label col-md-1 col-sm-1 col-xs-6">Tahun</label>
 						<div class="col-md-2 col-sm-2 col-xs-6 ">
 							<select id="filter-tahun" class="form-control">
@@ -57,6 +57,21 @@
 									<option value="{{ $v['value'] }}" >{{ $v['name'] }}</option>
 								@endforeach
 							</select>
+						</div>
+					</div> --}}
+
+					<div class="form-group col-md-5 col-sm-5 col-xs-12">
+						<label class="control-label col-md-3 col-sm-3 col-xs-3">Periode</label>
+						<div class="col-md-9 col-sm-9 col-xs-9">
+						  <div class="control-group">
+						    <div class="controls">
+						      <div class="col-md-11 xdisplay_inputx form-group has-feedback">
+						        <input type="text" class="form-control has-feedback-left" id="tahun-bulan" placeholder="Periode" name="periode" aria-describedby="inputPeriode" value="{{old('periode')}}">
+						        <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+						        <span id="inputPeriode" class="sr-only">(success)</span>
+						      </div>
+						    </div>
+						  </div>
 						</div>
 					</div>
 					
@@ -90,7 +105,7 @@
 							<td>{{ str_pad( $d->pegawai['nik'] , 4, '0', STR_PAD_LEFT) }}</td>
 							<td>{{ $d->pegawai['nama'] }}</td>
 							<td>{{ $d->tahun }}</td>
-							<td>{{ $d->bulan }}</td>
+							<td>{{ $d->nama_bulan }}</td>
 							<td>{{ $d->tanggal }}</td>
 							<td>{{ $d->status }}</td>
 							<td>{{ $d->jam_masuk }}</td>
@@ -123,7 +138,7 @@
 @push('script')
 
 <script type="text/javascript">
-	$.fn.dataTable.ext.search.push(
+	/*$.fn.dataTable.ext.search.push(
 		function( settings, data, dataIndex ) {
 			var filterTahun = parseInt( $('#filter-tahun').val(), 10 );
 			var filterBulan = parseInt( $('#filter-bulan').val(), 10 );
@@ -145,6 +160,36 @@
 			}
 			return false;
 		}
+	);*/
+	$filterPeriode = "";
+	$.fn.dataTable.ext.search.push(
+		function( settings, data, dataIndex ) {
+			//var filterTahun = parseInt( $('#filter-tahun').val(), 10 );
+			//var filterBulan = parseInt( $('#filter-bulan').val(), 10 );
+			//var bulan = parseFloat( data[4] ) || 0; // use data for the age column
+			var periode = $filterPeriode.split(" ");
+			var filterTahun = parseInt( periode[0], 10 );
+			var filterBulan = periode[1] || "";
+			if(periode.length == 2 || $filterPeriode == ""){
+				var tahun = parseFloat( data[3] ) || 0; // use data for the age column
+				var bulan = data[4] || ""; // use data for the age column
+				if ( 
+					(
+						isNaN( filterTahun ) ||
+						( !isNaN( filterTahun ) && tahun == filterTahun )
+						
+					) && 
+					(
+						!isNaN( filterBulan ) ||
+						( isNaN( filterBulan ) && bulan == filterBulan )
+					)
+				){
+					return true;
+				}
+			}
+			
+			return false;
+		}
 	);
 
 	$(document).ready(function() {
@@ -161,6 +206,28 @@
 		$('#filter-tahun, #filter-bulan').change( function() {
 			table.draw();
 		} );
+
+		$('#tahun-bulan').datetimepicker({
+			format: "YYYY MMMM",
+			viewMode: "months",
+			toolbarPlacement: "top",
+			showClear: true,
+			showClose: true,
+			useCurrent:false,
+			date:null,
+			collapse:false,
+			widgetPositioning:{
+				horizontal: 'auto',
+				vertical: 'auto'
+			},
+			allowInputToggle: false,
+			focusOnShow: false,
+		})
+		$("#tahun-bulan").on('dp.change', function(e){ 
+			var formatedValue = $(this).val() == "" ? $(this).val() : e.date.format(e.date._f);
+			$filterPeriode = formatedValue;
+			table.draw();
+		});
 	} );
 	
 </script>
