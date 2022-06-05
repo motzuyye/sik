@@ -83,7 +83,8 @@
 							<th rowspan="2">No.</th>
 							<th rowspan="2">NIK</th>
 							<th rowspan="2">Nama</th>
-							<th colspan="2">Periode</th>
+							<th colspan="2">Tahun Bulan</th>
+							<th rowspan="2">Periode</th>
 							<th rowspan="2">Gaji Pokok</th>
 							<th colspan="4">Ringkasan Kehadiran</th>
 							<th colspan="4">Potongan</th>
@@ -122,6 +123,7 @@
 								\Carbon\Carbon::setLocale('id');
 							@endphp
 							<td>{{ $monthName }}</td>
+							<td>{{ $d->tahun }}-{{ $monthName }}</td>
 							<td>Rp.{{ number_format($d->gaji_pokok) }}</td>
 							<td>{{ $d->hari_kerja }}</td>
 							<td>{{ $d->hari_izin }}</td>
@@ -213,8 +215,14 @@
 	);
 
 	$(document).ready(function() {
-		var table = $('#datatable-gaji').DataTable();
-		
+		var table = $('#datatable-gaji').DataTable({
+			"columnDefs": [
+				{
+					"targets": [ 3,4 ],
+					"visible": false
+				}
+			]
+		});
 		// Event listener to the two range filtering inputs to redraw on input
 		$('#filter-tahun, #filter-bulan').change( function() {
 			table.draw();
