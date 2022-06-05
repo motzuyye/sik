@@ -21,6 +21,15 @@ class LaporanController extends Controller
 		$data = [];
 		$periode = [];
 		$where = "TRUE ";
+		if( $request->has('periode') && $request->filled('periode') ){
+			$periode = $request->periode." 01";
+			$newPeriode =  Carbon::createFromFormat('Y F d', $periode);
+			$tahun = $newPeriode->format('Y');
+		    $bulan = $newPeriode->format('m');
+		    $where .= $bulan <> "" ? "AND gaji.bulan = $bulan " : "";
+		    $where .= $bulan <> "" ? "AND gaji.tahun = $tahun " : "";
+		}
+
 		if( $request->has('bulan') && $request->has('tahun') ){
 			$tahun = $request->tahun;
 		    $bulan = $request->bulan; 
@@ -79,7 +88,7 @@ class LaporanController extends Controller
     {
 		$data = $this->getDataGaji($request);
         //return view('admin.laporan.print_gaji', compact('data'));
-        $pdf = PDF::loadview('admin.laporan.print_gaji', compact('data'))->setPaper('letter', 'landscape')->stream('Laporan Gaji.pdf');
+        $pdf = PDF::setPaper('letter', 'landscape')->loadview('admin.laporan.print_gaji', compact('data'))->stream('Laporan Gaji.pdf');
         return $pdf;
     }
 

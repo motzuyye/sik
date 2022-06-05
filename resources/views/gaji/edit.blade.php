@@ -158,7 +158,7 @@
           <div class="ln_solid"></div>  
           <div class="form-group">
             <div class="col-md-12 col-sm-12 col-xs-12">
-              <a class="btn btn-default btn-md" href="/pegawai">Kembali</a>
+              <a class="btn btn-default btn-md" href="/gaji">Kembali</a>
               <button class="btn btn-success" type="submit" name="submit" value="submit">Simpan</button>
             </div>
           </div>

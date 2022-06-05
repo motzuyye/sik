@@ -16,7 +16,10 @@ use App\Aplikasi;
 class GajiController extends Controller
 {
     use DateTraits;
-
+    public function __construct(){
+        setlocale(LC_TIME, 'id_ID');
+        \Carbon\Carbon::setLocale('id');
+    }
     public function index()
     {
         if ( Auth::user()->level == 'pegawai' ) {
@@ -52,9 +55,16 @@ class GajiController extends Controller
         //return dd($request);
         $data = [];
         $periode = [];
-        if($request->has('bulan') && $request->has('tahun') ){
+        /*if($request->has('bulan') && $request->has('tahun') ){
             $tahun = $request->tahun;
-            $bulan = $request->bulan;
+            $bulan = $request->bulan;*/
+        if($request->has('periode') && $request->filled('periode') ){
+            $periode = $request->periode." 01";
+            $newPeriode =  Carbon::createFromFormat('Y F d', $periode);
+
+            $tahun = $newPeriode->format('Y');
+            $bulan = $newPeriode->format('m');
+
             $awal = "$tahun-$bulan-01";
             $awalTime = strtotime( $awal );
             $akhir =  date("Y-m-t", $awalTime);
@@ -111,6 +121,7 @@ class GajiController extends Controller
         }
         $dataRequest = $request->only('bulan', 'tahun');
         $yearMonth = $this->getYearMonth();
+        session()->flashInput($request->input());
         return view('gaji.add', compact('data', 'yearMonth','periode', 'dataRequest' ));
     }
 

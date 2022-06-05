@@ -8,6 +8,9 @@
         $title = $aplikasi->nama;
         $logo = is_null($aplikasi->logo) || $aplikasi->logo == "" ? $logo : $aplikasi->logo;
     }
+    setlocale(LC_TIME, 'id_ID');
+		\Carbon\Carbon::setLocale('id');
+
 @endphp
 <div class="row">
 	<div class="col-md-12">
@@ -35,23 +38,40 @@
 				<div class="container-fluid">
 					
 					<div class="form-group row">
-						<label class="control-label col-md-1 col-sm-1 col-xs-6">Tahun</label>
-						<div class="col-md-2 col-sm-2 col-xs-6 ">
-							<select id="filter-tahun" class="form-control">
-								<option value="">Pilih Tahun</option>
-								@foreach($tahuns as $tahun)
-									<option value="{{ $tahun->tahun }}">{{ $tahun->tahun }}</option>
-								@endforeach
-							</select>
+						<label class="control-label col-md-1 col-sm-1 col-xs-6">Periode</label>
+						<div class="col-md-3 col-sm-3 col-xs-6 ">
+							
+							<div class="control-group">
+							  <div class="controls">
+							    <div class="col-md-11 xdisplay_inputx form-group has-feedback">
+							      <input type="text" class="form-control has-feedback-left" id="tahun-bulan" placeholder="Periode" aria-describedby="inputSuccess2Status4">
+							      <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+							      <span id="inputSuccess2Status4" class="sr-only">(success)</span>
+							    </div>
+							  </div>
+							</div>
 						</div>
-						<label class="control-label col-md-1 col-sm-1 col-xs-6">Bulan</label>
-						<div class="col-md-2 col-sm-2 col-xs-6 ">
-							<select id="filter-bulan" class="form-control">
-								<option value="">Pilih Bulan</option>
-								@foreach($bulans as $i => $bulan)
-									<option value="{{ $bulan->bulan }}">{{ $bulan->nama_bulan }}</option>
-								@endforeach
-							</select>
+
+						<div style="display: none;">
+							<label class="control-label col-md-1 col-sm-1 col-xs-6">Tahun</label>
+							<div class="col-md-2 col-sm-2 col-xs-6 ">
+								<select id="filter-tahun" class="form-control">
+									<option value="">Pilih Tahun</option>
+									@foreach($tahuns as $tahun)
+										<option value="{{ $tahun->tahun }}">{{ $tahun->tahun }}</option>
+									@endforeach
+								</select>
+							</div>
+							<label class="control-label col-md-1 col-sm-1 col-xs-6">Bulan</label>
+							<div class="col-md-2 col-sm-2 col-xs-6 ">
+								<select id="filter-bulan" class="form-control">
+									<option value="">Pilih Bulan</option>
+									@foreach($bulans as $i => $bulan)
+										<option value="{{ $bulan->bulan }}">{{ $bulan->nama_bulan }}</option>
+									@endforeach
+								</select>
+							</div>
+							
 						</div>
 					</div>
 					
@@ -95,18 +115,24 @@
 							<td>{{ str_pad( $d->nik, 4, '0', STR_PAD_LEFT) }}</td>
 							<td>{{ $d->nama_pegawai }}</td>
 							<td>{{ $d->tahun }}</td>
-							<td>{{ $d->bulan }}</td>
-							<td>{{ $d->gaji_pokok }}</td>
+							@php
+								$monthNum  = $d->bulan;
+								$dateObj   = DateTime::createFromFormat('!m', $monthNum);
+								$monthName = $dateObj->format('F'); // March
+								\Carbon\Carbon::setLocale('id');
+							@endphp
+							<td>{{ $monthName }}</td>
+							<td>Rp.{{ number_format($d->gaji_pokok) }}</td>
 							<td>{{ $d->hari_kerja }}</td>
 							<td>{{ $d->hari_izin }}</td>
 							<td>{{ $d->hari_sakit }}</td>
 							<td>{{ $d->hari_cuti }}</td>
-							<td>{{ $d->bpjs_kesehatan }}</td>
-							<td>{{ $d->bpjs_tk }}</td>
-							<td>{{ $d->bpjs_jht }}</td>
-							<td>{{ $d->potongan_lain }}</td>
-							<td>{{ $d->bonus }}</td>
-							<td>{{ $d->total }}</td>
+							<td>Rp.{{ number_format($d->bpjs_kesehatan) }}</td>
+							<td>Rp.{{ number_format($d->bpjs_tk) }}</td>
+							<td>Rp.{{ number_format($d->bpjs_jht) }}</td>
+							<td>Rp.{{ number_format($d->potongan_lain) }}</td>
+							<td>Rp.{{ number_format($d->bonus) }}</td>
+							<td>Rp.{{ number_format($d->total) }}</td>
 							<td>{{ $d->keterangan }}</td>
 							
 							<td>
@@ -154,26 +180,34 @@
 @push('script')
 
 <script type="text/javascript">
+	$filterPeriode = "";
 	$.fn.dataTable.ext.search.push(
 		function( settings, data, dataIndex ) {
-			var filterTahun = parseInt( $('#filter-tahun').val(), 10 );
-			var filterBulan = parseInt( $('#filter-bulan').val(), 10 );
-			var tahun = parseFloat( data[3] ) || 0; // use data for the age column
-			var bulan = parseFloat( data[4] ) || 0; // use data for the age column
-			
-			if ( 
-				(
-					isNaN( filterTahun ) ||
-					( !isNaN( filterTahun ) && tahun == filterTahun )
-					
-				) && 
-				(
-					isNaN( filterBulan ) ||
-					( !isNaN( filterBulan ) && bulan == filterBulan )
-				)
-			){
-				return true;
+			//var filterTahun = parseInt( $('#filter-tahun').val(), 10 );
+			//var filterBulan = parseInt( $('#filter-bulan').val(), 10 );
+			//var bulan = parseFloat( data[4] ) || 0; // use data for the age column
+			var periode = $filterPeriode.split(" ");
+			var filterTahun = parseInt( periode[0], 10 );
+			var filterBulan = periode[1] || "";
+			if(periode.length == 2 || $filterPeriode == ""){
+				var tahun = parseFloat( data[3] ) || 0; // use data for the age column
+				var bulan = data[4] || ""; // use data for the age column
+
+				if ( 
+					(
+						isNaN( filterTahun ) ||
+						( !isNaN( filterTahun ) && tahun == filterTahun )
+						
+					) && 
+					(
+						!isNaN( filterBulan ) ||
+						( isNaN( filterBulan ) && bulan == filterBulan )
+					)
+				){
+					return true;
+				}
 			}
+			
 			return false;
 		}
 	);
@@ -185,9 +219,30 @@
 		$('#filter-tahun, #filter-bulan').change( function() {
 			table.draw();
 		} );
+
+		$('#tahun-bulan').datetimepicker({
+			format: "YYYY MMMM",
+			viewMode: "months",
+			toolbarPlacement: "top",
+			showClear: true,
+			showClose: true,
+			useCurrent:false,
+			date:null,
+			collapse:false,
+			widgetPositioning:{
+				horizontal: 'auto',
+				vertical: 'auto'
+	        },
+			allowInputToggle: false,
+			focusOnShow: false,
+		})
+		$("#tahun-bulan").on('dp.change', function(e){ 
+			var formatedValue = $(this).val() == "" ? $(this).val() : e.date.format(e.date._f);
+			$filterPeriode = formatedValue;
+			table.draw();
+		});
 	} );
 	function openSlip(id){
-		
 		$('#frame-slip').attr('src', '/gaji/slip/'+id);
 		$('.bs-example-modal-lg').modal('show');
 	}

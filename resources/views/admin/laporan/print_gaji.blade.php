@@ -37,6 +37,11 @@
 	      	border:0;
 	  	}
 	</style>
+  <style>
+    @page {
+      size: a4 landscape;
+    }
+  </style>
 </head>
 
 <body>
@@ -92,19 +97,19 @@
     	                    @foreach($data as $d)
     		                    <tr  >
     			                    <td align="center">{{ $no++ }}</td>
-    			                    <td align="center">{{$d->tahun}}</td>
-    			                    <td align="center">{{$d->nama_bulan}}</td>
-    			                    <td align="right">{{$d->gaji_pokok}}</td>
-    			                    <td align="center">{{$d->hari_kerja}}</td>
-    			                    <td align="center">{{$d->hari_izin}}</td>
-    			                    <td align="center">{{$d->hari_sakit}}</td>
-    			                    <td align="center">{{$d->hari_cuti}}</td>
-    			                    <td align="right">{{$d->bpjs_kesehatan}}</td>
-    			                    <td align="right">{{$d->bpjs_tk}}</td>
-    			                    <td align="right">{{$d->bpjs_jht}}</td>
-    			                    <td align="right">{{$d->potongan_lain}}</td>
-    			                    <td align="right">{{$d->bonus}}</td>
-    			                    <td align="right">{{$d->total}}</td>
+                              <td align="center">{{$d->tahun}}</td>
+                              <td align="center">{{$d->nama_bulan}}</td>
+                              <td align="right">Rp.{{number_format($d->gaji_pokok)}}</td>
+                              <td align="center">{{$d->hari_kerja}}</td>
+                              <td align="center">{{$d->hari_izin}}</td>
+                              <td align="center">{{$d->hari_sakit}}</td>
+                              <td align="center">{{$d->hari_cuti}}</td>
+                              <td align="right">Rp.{{number_format($d->bpjs_kesehatan)}}</td>
+                              <td align="right">Rp.{{number_format($d->bpjs_tk)}}</td>
+                              <td align="right">Rp.{{number_format($d->bpjs_jht)}}</td>
+                              <td align="right">Rp.{{number_format($d->potongan_lain)}}</td>
+                              <td align="right">Rp.{{number_format($d->bonus)}}</td>
+                              <td align="right">Rp.{{number_format($d->total)}}</td>
     		                    </tr>
     	                    	<?php $idx++; ?>
     	                    @endforeach

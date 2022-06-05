@@ -16,10 +16,25 @@
       <div class="x_title text-center">
         <h2>{{ $title }}</h2>
         <div class="clearfix"></div>
-        <form action="/gaji/create" method="get" enctype="multipart/form-data" class="form-inline" autocomplete="off">
+        <form action="/gaji/create" method="get" enctype="multipart/form-data" class="form-inline form-horizontal form-label-left" autocomplete="off">
           {{ csrf_field() }}
+          
           <div class="pull-right">
-            <select class="form-control" name="bulan" >
+            <div class="form-group">
+              <label class="control-label col-md-3 col-sm-3 col-xs-3">Periode</label>
+              <div class="col-md-9 col-sm-9 col-xs-9">
+                <div class="control-group">
+                  <div class="controls">
+                    <div class="col-md-11 xdisplay_inputx form-group has-feedback">
+                      <input type="text" class="form-control has-feedback-left" id="tahun-bulan" placeholder="Periode" name="periode" aria-describedby="inputPeriode" value="{{old('periode')}}">
+                      <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                      <span id="inputPeriode" class="sr-only">(success)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {{-- <select class="form-control" name="bulan" >
 
               @foreach( $yearMonth['month'] as $m => $v )
                 <option value="{{ $v['value'] }}" {{ ($dataRequest['bulan'] ?? Date('m') ) == $v['value'] ? "selected" : "" }} >{{ $v['name'] }}</option>
@@ -34,7 +49,7 @@
               <option value="2020" {{ ($dataRequest['tahun'] ?? 0 ) == "2020" ? "selected" : "" }}>2020</option>
               <option value="2021" {{ ($dataRequest['tahun'] ?? 0 ) == "2021" ? "selected" : "" }}>2021</option>
               <option value="2022" {{ ($dataRequest['tahun'] ?? 0 ) == "2022" ? "selected" : "" }}>2022</option> -->
-            </select>
+            </select> --}}
             <button type="submit" class="btn btn-primary" style="margin-bottom: 0">Ambil Data</button>
           </div>
           
@@ -52,8 +67,8 @@
                     <th rowspan="2" class="text-center">No.</th>
                     <th rowspan="2" class="text-center">NIK</th>
                     <th rowspan="2" class="text-center">Nama</th>
-                    <th colspan="2" class="text-center">Periode</th>
-                    <th rowspan="2" class="text-center">Gaji Pokok</th>
+                    <th rowspan="2" class="text-center" style="min-width: 100px">Periode</th>
+                    <th rowspan="2" class="text-center" style="min-width: 160px">Gaji Pokok</th>
                     <th colspan="4" class="text-center">Ringkasan Kehadiran</th>
                     <th colspan="4" class="text-center">Potongan</th>
                     <th rowspan="2" class="text-center">Bonus</th>
@@ -62,8 +77,8 @@
 
                   </tr>
                   <tr>
-                    <th class="text-center">Bulan</th>
-                    <th class="text-center">Tahun</th>
+                    {{-- <th class="text-center">Bulan</th>
+                    <th class="text-center">Tahun</th> --}}
                     <th class="text-center">Hr Kerja</th>
                     <th class="text-center">Hr Izin</th>
                     <th class="text-center">Hr Sakit</th>
@@ -89,14 +104,15 @@
                         <input type="text" size="30" name="nama[]" disabled id="nama-{{$idx}}"value="{{ $d->nama }}" data-idx="{{$idx}}">
                       </td>
                       <td>
-                        <input type="text" size="10" class="text-center" name="nama_bulan[]"  id="nama_bulan-{{$idx}}" disabled value="{{ $periode['nama_bulan'] }}">
+                        {{ $periode['tahun'] }}-{{ $periode['nama_bulan'] }}
+                        <input type="hidden" size="10" class="text-center" name="nama_bulan[]"  id="nama_bulan-{{$idx}}" disabled value="{{ $periode['nama_bulan'] }}">
                         <input type="hidden" name="bulan[]"  id="bulan-{{$idx}}" value="{{ $periode['bulan'] }}" data-idx="{{$idx}}">
+                      {{-- </td>
+                      <td> --}}
+                        <input type="hidden" size="4" class="text-center" name="tahun[]"  id="nik-{{$idx}}" readonly value="{{ $periode['tahun'] }}" data-idx="{{$idx}}">
                       </td>
-                      <td>
-                        <input type="text" size="4" class="text-center" name="tahun[]"  id="nik-{{$idx}}" readonly value="{{ $periode['tahun'] }}" data-idx="{{$idx}}">
-                      </td>
-                      <td align="right" >
-                        <input type="number" class="text-right" min="0" max="999999999" name="gaji_pokok[]"  id="gaji_pokok-{{$idx}}" readonly value="{{ $d->gaji_pokok }}" data-idx="{{$idx}}">
+                      <td style="display: flex;">
+                        Rp. <input type="number" class="text-right" min="0" max="999999999" name="gaji_pokok[]"  id="gaji_pokok-{{$idx}}" readonly value="{{ $d->gaji_pokok }}" data-idx="{{$idx}}" style="max-width: 120px">
                       </td>
                       <td>
                         <input type="number" min="0" max="31" class="text-center" name="hari_kerja[]"  id="hari_kerja-{{$idx}}" value="{{ $d->hari_kerja }}" readonly>
@@ -163,7 +179,23 @@
 
 @push('script')
 <script type="text/javascript">
-
+    $('#tahun-bulan').datetimepicker({
+      format: "YYYY MMMM",
+      viewMode: "months",
+      toolbarPlacement: "top",
+      showClear: true,
+      showClose: true,
+      useCurrent:false,
+      //date:null,
+      collapse:false,
+      widgetPositioning:{
+        horizontal: 'auto',
+        vertical: 'auto'
+      },
+      allowInputToggle: false,
+      focusOnShow: false,
+    })
+    
   function kalkulasi(){
 
       var x = document.getElementsByName("idx[]");
